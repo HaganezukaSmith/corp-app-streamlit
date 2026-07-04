@@ -92,6 +92,100 @@ installer.iss               # Inno Setup скрипт
 
 ---
 
+## Схема работы приложения (Mermaid)
+
+```mermaid
+flowchart TB
+    subgraph User["👤 Пользователь"]
+        Browser["Браузер (Streamlit UI)"]
+    end
+
+    subgraph App["📦 Приложение (Python)"]
+        direction TB
+        Entry["app.py<br/>Точка входа"]
+        
+        subgraph Auth["🔐 Аутентификация"]
+            Login["auth.py<br/>Login / Register"]
+            Cookies["Cookie-based сессия"]
+            RateLimit["Rate Limiting<br/>(5 попыток)"]
+        end
+
+        subgraph Tabs["📑 Вкладки интерфейса"]
+            Acts["tab_acts.py<br/>Создание актов"]
+            Inspect["tab_inspect.py<br/>Акт осмотра ОТК"]
+            Mail["tab_mail.py<br/>Задачи и почта"]
+            Stat["tab_stat.py<br/>Статистика"]
+            Arch["tab_arch.py<br/>Архив"]
+            Imp["tab_imp.py<br/>Импорт"]
+            Eff["tab_eff.py<br/>Эффективность"]
+            Dash["tab_dash.py<br/>Дашборд"]
+            Admin["tab_admin.py<br/>Управление"]
+        end
+
+        subgraph Utils["🔧 Утилиты"]
+            UI["ui_helpers.py<br/>Общие компоненты"]
+            Docx["docx_utils.py<br/>Генерация DOCX"]
+            Telegram["telegram_utils.py<br/>Отправка в Telegram"]
+            TaskMesh["taskmesh_client.py<br/>TaskMesh API"]
+            Notif["notifications.py<br/>Push-уведомления"]
+            Parser["archive_parser.py<br/>Парсинг DOCX"]
+        end
+    end
+
+    subgraph Storage["💾 Хранилище"]
+        DB[("factory_defects.db<br/>SQLite<br/>14 таблиц")]
+        DocxFiles["📁 Archive_Acts/<br/>*.docx"]
+        Templates["📄 Шаблоны DOCX"]
+        Logs["📝 logs/app.log"]
+    end
+
+    subgraph External["🌐 Внешние системы"]
+        TG[("Telegram Bot API")]
+        TM[("TaskMesh Server<br/>localhost:8080")]
+    end
+
+    subgraph Config["⚙️ Конфигурация"]
+        Env[".env"]
+        TGConfig["config.json"]
+    end
+
+    %% Связи
+    Browser -->|HTTP| Entry
+    Entry -->|setup_cookies| Login
+    Login --> Cookies
+    Cookies --> RateLimit
+    RateLimit -->|st.session_state| Tabs
+
+    Entry -->|init_db| DB
+    Entry -->|inject_theme| Theme
+    Entry -->|render_notifications| Notif
+
+    Tabs -->|safe_execute| DB
+    Tabs -->|generate_diag_act| Docx
+    Tabs -->|send_to_telegram| Telegram
+    Tabs -->|taskmesh_*| TaskMesh
+    Tabs -->|get_unread_count| UI
+
+    Docx -->|читает| Templates
+    Docx -->|сохраняет| DocxFiles
+
+    Telegram -->|отправляет документы| TG
+    TaskMesh -->|REST API| TM
+
+    Parser -->|читает| DocxFiles
+    Parser -->|записывает| DB
+
+    Notif -->|WebSocket Poll| DB
+    Notif -->|Browser Notification| Browser
+
+    UI -->|кэшированные запросы| DB
+
+    Config -->|dotenv| Entry
+    Config -->|load_tg_config| Telegram
+
+    Logs -.->|записывают| LogFile
+```
+
 ## Данные
 
 ### База данных (SQLite)
