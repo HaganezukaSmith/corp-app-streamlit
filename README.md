@@ -15,21 +15,18 @@
 
 ---
 
-## Технологии
+## Стек
 
-| Компонент | Библиотека |
-|-----------|-----------|
-| UI | Streamlit 1.35+ |
-| База данных | sqlite3 |
-| Работа с данными | pandas, openpyxl |
-| DOCX | python-docx, docxtpl |
-| Telegram API | requests |
-| Аутентификация | bcrypt, hashlib |
-| Окружение | python-dotenv |
-| Логирование | logging (RotatingFileHandler) |
-| Десктоп | pywebview, pywin32 |
-| Сборка | PyInstaller |
-| Установка | Inno Setup |
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python) ![Streamlit](https://img.shields.io/badge/Streamlit-1.35+-FF4B4B?logo=streamlit) ![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite) ![Telegram](https://img.shields.io/badge/Telegram_API-26A8E4?logo=telegram)
+
+- **UI:** Streamlit 1.35+
+- **База данных:** SQLite (`sqlite3`)
+- **Работа с данными:** `pandas`, `openpyxl`
+- **DOCX (Акты):** `python-docx`, `docxtpl`
+- **Интеграции:** Telegram API (`requests`)
+- **Аутентификация:** `bcrypt`, `hashlib`
+- **Окружение и логирование:** `python-dotenv`, `logging` (RotatingFileHandler)
+- **Десктоп и сборка:** `pywebview`, `pywin32`, PyInstaller, Inno Setup
 
 ---
 
